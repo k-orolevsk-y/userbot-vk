@@ -10,7 +10,7 @@ def cmd(api, message, owner_id, uploader: VkUpload):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['error']} Необходимо прикрепить аудиозапись или ответить на сообщение с аудиозаписью. 1",
+            message=f"{config.prefixes['error']} Необходимо прикрепить аудиозапись или ответить на сообщение с аудиозаписью.",
             reply_to=message['id']
         )
         return
@@ -28,7 +28,7 @@ def cmd(api, message, owner_id, uploader: VkUpload):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['error']} Необходимо прикрепить аудиозапись или ответить на сообщение с аудиозаписью. 2",
+            message=f"{config.prefixes['error']} Необходимо прикрепить аудиозапись или ответить на сообщение с аудиозаписью.",
             reply_to=message['id']
         )
         return
