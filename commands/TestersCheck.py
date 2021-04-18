@@ -35,8 +35,7 @@ def cmd(api, message, args, owner_id):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['success']} [id" + str(target['id']) + "|" + str(target['first_name']) + " " + str(
-                target['last_name']) + "] не тестировщик из [testpool|/testpool].",
+            message=f"{config.prefixes['success_no']} [id{target['id']}|{target['first_name']} {target['last_name']}] не тестировщик из [testpool|/testpool].",
             reply_to=message['id'],
             disable_mentions=True
         )
@@ -44,9 +43,7 @@ def cmd(api, message, args, owner_id):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['success']} [id" + str(target['id']) + "|" + str(target['first_name']) + " " + str(
-                target['last_name']) + "] тестировщик из [testpool|/testpool].\n\nhttps://vk.com/bugs?act=reporter&id=" + str(
-                target['id']),
+            message=f"{config.prefixes['success']} [id{target['id']}|{target['first_name']} {target['last_name']}] тестировщик из [testpool|/testpool].\n\nhttps://vk.com/bugs?act=reporter&id={target['id']}",
             reply_to=message['id'],
             disable_mentions=True
         )
