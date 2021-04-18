@@ -147,7 +147,7 @@ for event in longpoll.listen():
                 or args[0].lower() in ['-м', '-a', '-с', '-s']:
             PrivacyClose.cmd(api, message, args, owner_id)
 
-    if args[0].lower() == '/audio':
+    if args[0].lower() in ['/au', '/audio']:
         Audio.cmd(api, message, args, uploader)
     elif args[0].lower() == '/d':
         Dist.cmd(api, message, args, uploader)
