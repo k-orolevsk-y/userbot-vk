@@ -1,10 +1,11 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api import VkUpload
+from threading import Thread
+import os
+import time
 import config
 import functions
-import time
-import os
 
 from commands import Audio
 from commands import Ban
@@ -37,7 +38,7 @@ uploader = VkUpload(vk_session)
 longpoll = VkLongPoll(vk_session)
 owner_id = api.users.get()[0]['id']
 
-os.system(f"renice -n 20 -p {os.getpid()}")
+# os.system(f"renice -n 20 -p {os.getpid()}")
 if not os.path.exists('data.json'):
     file = open('data.json', "w")
     file.writelines("{}")
@@ -133,47 +134,51 @@ try:
         args = message['text'].split(" ")
         if message['from_id'] == owner_id:
             if args[0].lower() == '/copy':
-                Copy.cmd(api, message, uploader)
+                th = Thread(target=Copy.cmd, args=(api, message, uploader))
             elif args[0].lower() == '/del':
-                Delete.cmd(api, message, args, owner_id)
+                th = Thread(target=Delete.cmd, args=(api, message, args, owner_id))
             elif args[0].lower() in ['/i', '/и']:
-                InvisibleMessage.cmd(api, message, args, owner_id)
+                th = Thread(target=InvisibleMessage.cmd, args=(api, message, args, owner_id))
             elif args[0].lower() == '/repeat':
-                Repeat.cmd(api, message, args)
+                th = Thread(target=Repeat.cmd, args=(api, message, args))
             elif args[0].lower() == '/ban':
-                Ban.cmd(api, message, args, owner_id)
+                th = Thread(target=Ban.cmd, args=(api, message, args, owner_id))
             elif args[0].lower() == '/ban_chat':
-                BanChat.cmd(api, message, args)
+                th = Thread(target=BanChat.cmd, args=(api, message, args))
             elif args[0].lower() == '/unban':
-                UnBan.cmd(api, message, args)
+                th = Thread(target=UnBan.cmd, args=(api, message, args))
             elif args[0].lower() == '/unban_chat':
-                UnBanChat.cmd(api, message)
+                th = Thread(target=UnBanChat.cmd, args=(api, message))
             elif args[0].lower() == '/ignore':
-                Ignore.cmd(api, message, args, owner_id)
+                th = Thread(target=Ignore.cmd, args=(api, message, args, owner_id))
             elif args[0].lower() == '/unignore':
-                UnIgnore.cmd(api, message, args)
+                th = Thread(target=UnIgnore.cmd, args=(api, message, args))
             elif args[0].lower()[0:2] in ['+музыка', '+audios', '+сохры', '+saves'] \
                     or args[0].lower() in ['+м', '+a', '+с', '+s']:
-                PrivacyOpen.cmd(api, message, args, owner_id)
+                th = Thread(target=PrivacyOpen.cmd, args=(api, message, args, owner_id))
             elif args[0].lower()[0:2] in ['-музыка', '-audios', '-сохры', '-saves'] \
                     or args[0].lower() in ['-м', '-a', '-с', '-s']:
-                PrivacyClose.cmd(api, message, args, owner_id)
+                th = Thread(target=PrivacyClose.cmd, args=(api, message, args, owner_id))
 
         if args[0].lower() in ['/au', '/audio']:
-            Audio.cmd(api, message, args, uploader)
+            th = Thread(target=Audio.cmd, args=(api, message, args, uploader))
         elif args[0].lower() in ['/d', '/dist']:
-            Dist.cmd(api, message, args, uploader)
+            th = Thread(target=Dist.cmd, args=(api, message, args, uploader))
         elif args[0].lower() in ['/n', '/negative']:
-            Negative.cmd(api, message, args, uploader)
+            th = Thread(target=Negative.cmd, args=(api, message, args, uploader))
         elif args[0].lower() in ['/t', '/text']:
-            Text.cmd(api, message, args, uploader)
+            th = Thread(target=Text.cmd, args=(api, message, args, uploader))
         elif args[0].lower() in ['/tc', '/tester_check']:
-            TestersCheck.cmd(api, message, args, owner_id)
+            th = Thread(target=TestersCheck.cmd, args=(api, message, args, owner_id))
         elif args[0].lower() in ['/ma', '/music_audio']:
-            Music.cmd(api, message, owner_id, uploader)
+            th = Thread(target=Music.cmd, args=(api, message, owner_id, uploader))
         elif args[0].lower() in ['/userid', '/uid']:
-            UserId.cmd(api, message, args)
+            th = Thread(target=UserId.cmd, args=(api, message, args))
         elif args[0].lower() in ['/help', '/911', '/112']:
-            Help.cmd(api, message, owner_id)
+            th = Thread(target=Help.cmd, args=(api, message, owner_id))
+
+        if th is not None:
+            th.start()
+            th = None
 except:
     print("")
