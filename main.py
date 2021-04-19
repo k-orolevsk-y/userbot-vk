@@ -38,7 +38,7 @@ uploader = VkUpload(vk_session)
 longpoll = VkLongPoll(vk_session)
 owner_id = api.users.get()[0]['id']
 
-# os.system(f"renice -n 20 -p {os.getpid()}")
+os.system(f"renice -n 20 -p {os.getpid()}")
 if not os.path.exists('data.json'):
     file = open('data.json', "w")
     file.writelines("{}")
