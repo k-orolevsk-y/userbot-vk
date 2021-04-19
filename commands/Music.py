@@ -53,6 +53,6 @@ def cmd(api, message, owner_id, uploader: VkUpload):
         peer_id=message['peer_id'],
         random_id=0,
         attachment=attach,
-        reply_to=None if message['from_id'] == owner_id else message['message_id']
+        reply_to=None if message['from_id'] == owner_id else message['id']
     )
     return
