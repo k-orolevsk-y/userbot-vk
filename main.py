@@ -83,6 +83,8 @@ try:
             continue
 
         message = api.messages.getById(message_ids=event.message_id)['items'][0]
+        th = None
+
         if config.log_messages:
             current_time = time.strftime("%H:%M:%S", time.localtime())
 
