@@ -27,6 +27,9 @@ from commands import UnBanChat
 from commands import UnIgnore
 from commands import UserId
 
+if config.access_token is None or config.access_token == "":
+    exit("Необходимо установить access_token в config.py")
+
 vk_session = vk_api.VkApi(token=config.access_token)
 api = vk_session.get_api()
 uploader = VkUpload(vk_session)

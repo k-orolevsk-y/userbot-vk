@@ -12,7 +12,7 @@ def cmd(api, message, args, uploader: VkUpload):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['error']} Необходимо ответить на сообщение с фотографией, либо прикрепить фотографию.",
+            message=f"{config.prefixes['error']} Необходимо ответить на сообщение с фотографией / стикером, либо прикрепить фотографию.",
             reply_to=message['id']
         )
         return
@@ -33,7 +33,7 @@ def cmd(api, message, args, uploader: VkUpload):
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
-            message=f"{config.prefixes['error']} Необходимо ответить на сообщение с фотографией, либо прикрепить фотографию.",
+            message=f"{config.prefixes['error']} Необходимо ответить на сообщение с фотографией / стикером, либо прикрепить фотографию.",
             reply_to=message['id']
         )
         return

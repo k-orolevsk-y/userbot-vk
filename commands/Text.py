@@ -6,7 +6,8 @@ from vk_api import VkUpload
 
 def cmd(api, message, args, uploader: VkUpload):
     attach = message.get('attachments')
-    if len(attach) == 0 or args[1] is None:
+    reply = message.get('reply_message')
+    if (len(attach) == 0 and reply is None) or args[1] is None:
         api.messages.send(
             peer_id=message['peer_id'],
             random_id=0,
@@ -16,7 +17,10 @@ def cmd(api, message, args, uploader: VkUpload):
         return
 
     try:
-        img = attach[0]['photo']['sizes'].pop()['url']
+        if reply is not None:
+            img = reply['attachments'][0]['photo']['sizes'].pop()['url']
+        else:
+            img = attach[0]['photo']['sizes'].pop()['url']
     except:
         api.messages.send(
             peer_id=message['peer_id'],
@@ -38,7 +42,7 @@ def cmd(api, message, args, uploader: VkUpload):
           -bordercolor black -border 3  -bordercolor white -border 2 \
           \( -background black -fill white -pointsize 24 \
              label:\"{text}\"   -trim +repage \
-             -bordercolor black -border 30 \
+             -bordercolor black -border 20 \
           \) -gravity South -append \
           -bordercolor black -border 10   -gravity South -chop 0x10 \
          {filename}")
