@@ -3,12 +3,12 @@ import functions
 
 
 def cmd(api, message, args, owner_id):
-    if message.get('reply_message') is not None:
-        user_id = message['reply_message']['from_id']
-    else:
-        user_id = functions.getUserId(args[1])
-
     try:
+        if message.get('reply_message') is not None:
+            user_id = message['reply_message']['from_id']
+        else:
+            user_id = functions.getUserId(args[1])
+
         target = api.users.get(user_ids=user_id)
         target = target.pop()
     except:

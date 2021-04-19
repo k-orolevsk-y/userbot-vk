@@ -134,49 +134,49 @@ try:
                 continue
 
         args = message['text'].split(" ")
+        cmd = args[0].lower()
+
         if message['from_id'] == owner_id:
-            if args[0].lower() == '/copy':
+            if cmd == '/copy':
                 th = Thread(target=Copy.cmd, args=(api, message, uploader))
-            elif args[0].lower() == '/del':
+            elif cmd == '/del':
                 th = Thread(target=Delete.cmd, args=(api, message, args, owner_id))
-            elif args[0].lower() in ['/i', '/и']:
+            elif cmd in ['/i', '/и']:
                 th = Thread(target=InvisibleMessage.cmd, args=(api, message, args, owner_id))
-            elif args[0].lower() == '/repeat':
+            elif cmd == '/repeat':
                 th = Thread(target=Repeat.cmd, args=(api, message, args))
-            elif args[0].lower() == '/ban':
+            elif cmd == '/ban':
                 th = Thread(target=Ban.cmd, args=(api, message, args, owner_id))
-            elif args[0].lower() == '/ban_chat':
+            elif cmd == '/ban_chat':
                 th = Thread(target=BanChat.cmd, args=(api, message, args))
-            elif args[0].lower() == '/unban':
+            elif cmd == '/unban':
                 th = Thread(target=UnBan.cmd, args=(api, message, args))
-            elif args[0].lower() == '/unban_chat':
+            elif cmd == '/unban_chat':
                 th = Thread(target=UnBanChat.cmd, args=(api, message))
-            elif args[0].lower() == '/ignore':
+            elif cmd == '/ignore':
                 th = Thread(target=Ignore.cmd, args=(api, message, args, owner_id))
-            elif args[0].lower() == '/unignore':
+            elif cmd == '/unignore':
                 th = Thread(target=UnIgnore.cmd, args=(api, message, args))
-            elif args[0].lower()[0:2] in ['+музыка', '+audios', '+сохры', '+saves'] \
-                    or args[0].lower() in ['+м', '+a', '+с', '+s']:
+            elif cmd in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
                 th = Thread(target=PrivacyOpen.cmd, args=(api, message, args, owner_id))
-            elif args[0].lower()[0:2] in ['-музыка', '-audios', '-сохры', '-saves'] \
-                    or args[0].lower() in ['-м', '-a', '-с', '-s']:
+            elif cmd in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:
                 th = Thread(target=PrivacyClose.cmd, args=(api, message, args, owner_id))
 
-        if args[0].lower() in ['/au', '/audio']:
+        if cmd in ['/au', '/audio']:
             th = Thread(target=Audio.cmd, args=(api, message, args, uploader))
-        elif args[0].lower() in ['/d', '/dist']:
+        elif cmd in ['/d', '/dist']:
             th = Thread(target=Dist.cmd, args=(api, message, args, uploader))
-        elif args[0].lower() in ['/n', '/negative']:
+        elif cmd in ['/n', '/negative']:
             th = Thread(target=Negative.cmd, args=(api, message, args, uploader))
-        elif args[0].lower() in ['/t', '/text']:
+        elif cmd in ['/t', '/text']:
             th = Thread(target=Text.cmd, args=(api, message, args, uploader))
-        elif args[0].lower() in ['/tc', '/tester_check']:
+        elif cmd in ['/tc', '/tester_check']:
             th = Thread(target=TestersCheck.cmd, args=(api, message, args, owner_id))
-        elif args[0].lower() in ['/ma', '/music_audio']:
+        elif cmd in ['/ma', '/music_audio']:
             th = Thread(target=Music.cmd, args=(api, message, owner_id, uploader))
-        elif args[0].lower() in ['/userid', '/uid']:
+        elif cmd in ['/userid', '/uid']:
             th = Thread(target=UserId.cmd, args=(api, message, args))
-        elif args[0].lower() in ['/help', '/911', '/112']:
+        elif cmd in ['/help', '/911', '/112']:
             th = Thread(target=Help.cmd, args=(api, message, owner_id))
 
         if th is not None:

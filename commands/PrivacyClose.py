@@ -1,10 +1,9 @@
 import time
 import config
-import functions
 
 
 def cmd(api, message, args, owner_id):
-    _type = args[0].lower()[0:2]
+    _type = args[0].lower()
     for_all = None if message['from_id'] == message['peer_id'] else True
 
     if message.get('reply_message') is not None:
@@ -38,7 +37,7 @@ def cmd(api, message, args, owner_id):
         )
         return
 
-    if _type in ['+музыка', '+audios'] or message['text'] in ['+м', '+a']:
+    if _type in ['-музыка', '-audios', '-м', '-a']:
         api_response = api.account.getPrivacySettings()
 
         owners = []
@@ -72,7 +71,7 @@ def cmd(api, message, args, owner_id):
         api.messages.edit(
             peer_id=message['peer_id'],
             message_id=message['id'],
-            message=f"{config.prefixes['success']} Пользователю [id{target['id']}|{target['first_name']} {target['last_name']}] закрыт доступ к аудиозаписям!"
+            message=f"{config.prefixes['success_no']} Пользователю [id{target['id']}|{target['first_name']} {target['last_name']}] закрыт доступ к аудиозаписям!"
         )
     else:
         api_response = api.account.getPrivacySettings()
@@ -106,6 +105,6 @@ def cmd(api, message, args, owner_id):
         api.messages.edit(
             peer_id=message['peer_id'],
             message_id=message['id'],
-            message=f"{config.prefixes['success']} Пользователю [id{target['id']}|{target['first_name']} {target['last_name']}] закрыт доступ к сохрам!"
+            message=f"{config.prefixes['success_no']} Пользователю [id{target['id']}|{target['first_name']} {target['last_name']}] закрыт доступ к сохрам!"
         )
     return
