@@ -41,9 +41,9 @@ def cmd(api, message, owner_id, uploader: VkUpload):
         f.write(r.content)
 
     if os.path.isfile('files/new_audio.wav'): os.remove('files/new_audio.wav')
-    os.system(f"ffmpeg -i {filename} -acodec pcm_s16le -ac 1 -ar 16000 files/new_audio.wav")
+    os.system(f"ffmpeg -i {filename} -acodec pcm_s32le -ar 44100 -ac 1 -b:a 256k files/new_audio.wav")
 
-    uploaded = uploader.audio_message(filename, message['peer_id'])['audio_message']
+    uploaded = uploader.audio_message('files/new_audio.wav', message['peer_id'])['audio_message']
     attach = f"audio_message{uploaded['owner_id']}_{uploaded['id']}"
 
     os.remove(filename)

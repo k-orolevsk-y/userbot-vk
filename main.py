@@ -7,26 +7,8 @@ import time
 import config
 import functions
 
-from commands import Audio
-from commands import Ban
-from commands import BanChat
-from commands import Copy
-from commands import Delete
-from commands import Dist
-from commands import Help
-from commands import Ignore
-from commands import InvisibleMessage
-from commands import Music
-from commands import Negative
-from commands import PrivacyClose
-from commands import PrivacyOpen
-from commands import Repeat
-from commands import TestersCheck
-from commands import Text
-from commands import UnBan
-from commands import UnBanChat
-from commands import UnIgnore
-from commands import UserId
+from commands import Audio, Ban, BanChat, Copy, Delete, Dist, Help, Ignore, InvisibleMessage, Music,\
+    Negative, PrivacyClose, PrivacyOpen, Repeat, TestersCheck, Text, UnBan, UnBanChat, UnIgnore, UserId
 
 if config.access_token is None or config.access_token == "":
     exit("Необходимо установить access_token в config.py")
