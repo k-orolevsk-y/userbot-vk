@@ -9,7 +9,8 @@ modules = {
     "vk_api": "vk_api",
     "ujson": "ujson",
     "PIL": "pillow",
-    "requests": "requests"
+    "requests": "requests",
+    "termcolor": "termcolor",
 }
 for module in modules:
     if find_spec(module) is None:

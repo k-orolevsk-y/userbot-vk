@@ -1,14 +1,18 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api import VkUpload
-from threading import Thread
+from threading import Thread, local
 import os
 import time
-import config
 import functions
+from termcolor import colored, cprint
 
-from commands import Audio, Ban, BanChat, Copy, Delete, Dist, Help, Ignore, InvisibleMessage, Music,\
-    Negative, PrivacyClose, PrivacyOpen, Repeat, TestersCheck, Text, UnBan, UnBanChat, UnIgnore, UserId
+from commands import *
+import config
+try:
+    import config_local as config
+except ImportError:
+    pass
 
 if config.access_token is None or config.access_token == "":
     exit("Необходимо установить access_token в config.py")
@@ -63,7 +67,6 @@ try:
     for event in longpoll.listen():
         if event.type != VkEventType.MESSAGE_NEW:
             continue
-
         message = api.messages.getById(message_ids=event.message_id)['items'][0]
         th = None
 
@@ -89,12 +92,25 @@ try:
                 else:
                     text = "• пересланные сообщения"
 
+
+            prep_time = colored(f"[{current_time}]", 'blue')
+            mark = ''
+            user_ask = colored(getUserName(message['from_id']), 'red')
+            prep_text = ": " + colored(text, 'cyan')
+
             if message['peer_id'] > 2000000000:
-                print(f"\033[34m[{current_time}] "
-                      f"\033[37m[\033[32m{getChatName(message['peer_id'])}\033[37m/\033[31m{getUserName(message['from_id'])}\033[37m]: \033[36m{text}")
+                conversation = colored(getChatName(message['peer_id']), 'green')
             else:
-                print(f"\033[34m[{current_time}] "
-                      f"\033[37m[ЛС] [\033[32m{getUserName(message['peer_id'])}\033[37m/\033[31m{getUserName(message['from_id'])}\033[37m]: \033[36m{text}")
+                conversation = colored(getUserName(message['peer_id']), 'green')
+                mark = "[ЛС]"
+                
+            info_conversation = f"[{conversation}/{user_ask}]"
+            print(
+                prep_time,
+                mark,
+                info_conversation,
+                prep_text,
+            )
 
         ignored_users = functions.getData('ignore')
         if ignored_users is not None:
@@ -115,7 +131,7 @@ try:
             if (message['peer_id'] in banned_peers) and not (message['from_id'] == owner_id):
                 continue
 
-        args = message['text'].split(" ")
+        args = message['text'].split()
         cmd = args[0].lower()
 
         if message['from_id'] == owner_id:
@@ -164,5 +180,5 @@ try:
         if th is not None:
             th.start()
             th = None
-except:
-    print("")
+except Exception as e:
+    print(e)
