@@ -1,7 +1,7 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api import VkUpload
-from threading import Thread, local
+from threading import Thread
 import os
 import time
 import functions
