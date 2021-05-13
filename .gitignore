@@ -1,3 +1,9 @@
 .gitignore
 .idea
 venv
+config_local.py
+files
+__pycache__
+*.pyc
+commands/*.pyc
+data.json
