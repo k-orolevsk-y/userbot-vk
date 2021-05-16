@@ -6,9 +6,9 @@ import os
 import time
 import functions
 from termcolor import colored, cprint
-
 from commands import *
 import config
+
 try:
     import config_local as config
 except ImportError:
@@ -92,7 +92,6 @@ try:
                 else:
                     text = "• пересланные сообщения"
 
-
             prep_time = colored(f"[{current_time}]", 'blue')
             mark = ''
             user_ask = colored(getUserName(message['from_id']), 'red')
@@ -103,13 +102,12 @@ try:
             else:
                 conversation = colored(getUserName(message['peer_id']), 'green')
                 mark = "[ЛС]"
-                
-            info_conversation = f"[{conversation}/{user_ask}]"
+
+            info_conversation = f"[{conversation}/{user_ask}]{prep_text}"
             print(
                 prep_time,
                 mark,
                 info_conversation,
-                prep_text,
             )
 
         ignored_users = functions.getData('ignore')
@@ -130,6 +128,10 @@ try:
         if banned_peers is not None:
             if (message['peer_id'] in banned_peers) and not (message['from_id'] == owner_id):
                 continue
+
+        disable = functions.getData('disabled')
+        if disable and message['from_id'] != owner_id:
+            continue
 
         args = message['text'].split()
         cmd = args[0].lower()
@@ -155,6 +157,8 @@ try:
                 th = Thread(target=Ignore.cmd, args=(api, message, args, owner_id))
             elif cmd == '/unignore':
                 th = Thread(target=UnIgnore.cmd, args=(api, message, args))
+            elif cmd == '/disable':
+                th = Thread(target=Disable.cmd, args=(api, message))
             elif cmd in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
                 th = Thread(target=PrivacyOpen.cmd, args=(api, message, args, owner_id))
             elif cmd in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:

@@ -51,6 +51,10 @@ commands = {
             "description": "удалить сообщения",
         },
         {
+            "commands_alias": ["/disable"],
+            "description": "отключить бота для общедоступного использования",
+        },
+        {
             "commands_alias": ["/i", "/и"],
             "description": "отправить исчезающее сообщение",
         },
@@ -73,6 +77,7 @@ commands = {
     ]
 }
 
+
 def get_commands(type_commands):
     out = ""
     for command in commands[type_commands]:
@@ -81,22 +86,21 @@ def get_commands(type_commands):
         out += f"{alias_transform} -- {description}\n"
     return out
 
-def cmd(api, message, owner_id):
 
-    uneversal_message = "\n🐺 Разработчики: [id171812976|тык], [id413636725|тык]"
+def cmd(api, message, owner_id):
+    universal_message = "\n🐺 Разработчики: [id171812976|тык], [id413636725|тык]"
     github = "\n❔ Полный список команд и обновления можно посмотреть тут: https://korolevsky.me?ub"
     main_message = f"🚑 Доступные команды >>\n{get_commands('public')}"
 
     if message['from_id'] == owner_id:
         main_message += f"\n❗️ Команды владельца:\n{get_commands('private')}"
-        uneversal_message += github
+        universal_message += github
 
-    main_message += uneversal_message
-    
+    main_message += universal_message
+
     api.messages.send(
         peer_id=message['peer_id'],
         random_id=0,
         message=main_message,
         reply_to=message['id']
     )
-

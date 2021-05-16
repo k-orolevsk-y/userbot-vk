@@ -3,6 +3,7 @@ from .Ban import *
 from .BanChat import *
 from .Copy import *
 from .Delete import *
+from .Disable import *
 from .Dist import *
 from .Help import *
 from .Ignore import *
