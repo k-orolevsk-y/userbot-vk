@@ -5,8 +5,9 @@ from threading import Thread
 import os
 import time
 import functions
-from termcolor import colored, cprint
+from termcolor import colored
 from commands import *
+from CustomExceptions import *
 import config
 
 try:
@@ -61,14 +62,9 @@ def getChatName(chat_id):
 
     return chat_names_cache.get(chat_id)
 
-
-print("Успешный запуск бота.")
-try:
-    for event in longpoll.listen():
-        if event.type != VkEventType.MESSAGE_NEW:
-            continue
+def worker(event):
+    try:
         message = api.messages.getById(message_ids=event.message_id)['items'][0]
-        th = None
 
         if config.log_messages:
             current_time = time.strftime("%H:%M:%S", time.localtime())
@@ -117,77 +113,84 @@ try:
                     message_ids=message['id'],
                     delete_for_all=0
                 )
-                continue
+                raise skipHandle()
 
         banned = functions.getData('banned')
         if banned is not None:
             if message['from_id'] in banned:
-                continue
+                raise skipHandle()
 
         banned_peers = functions.getData('banned_peers')
         if banned_peers is not None:
             if (message['peer_id'] in banned_peers) and not (message['from_id'] == owner_id):
-                continue
+                raise skipHandle()
 
         disable = functions.getData('disabled')
         if disable and message['from_id'] != owner_id:
-            continue
+            raise skipHandle()
 
         if message['text'] is None or message['text'] == "":
-            continue
+            raise skipHandle()
 
         args = message['text'].split()
         cmd = args[0].lower()
 
         if message['from_id'] == owner_id:
             if cmd == '/copy':
-                th = Thread(target=Copy.cmd, args=(api, message, uploader))
+                Copy.cmd(api, message, uploader)
             elif cmd == '/del':
-                th = Thread(target=Delete.cmd, args=(api, message, args, owner_id))
+                Delete.cmd(api, message, args, owner_id)
             elif cmd in ['/i', '/и']:
-                th = Thread(target=InvisibleMessage.cmd, args=(api, message, args, owner_id))
+                InvisibleMessage.cmd(api, message, args, owner_id)
             elif cmd == '/repeat':
-                th = Thread(target=Repeat.cmd, args=(api, message, args))
+                Repeat.cmd(api, message, args)
             elif cmd == '/ban':
-                th = Thread(target=Ban.cmd, args=(api, message, args, owner_id))
+                Ban.cmd(api, message, args, owner_id)
             elif cmd == '/ban_chat':
-                th = Thread(target=BanChat.cmd, args=(api, message, args))
+                BanChat.cmd(api, message, args)
             elif cmd == '/unban':
-                th = Thread(target=UnBan.cmd, args=(api, message, args))
+                UnBan.cmd(api, message, args)
             elif cmd == '/unban_chat':
-                th = Thread(target=UnBanChat.cmd, args=(api, message))
+                UnBanChat.cmd(api, message)
             elif cmd == '/ignore':
-                th = Thread(target=Ignore.cmd, args=(api, message, args, owner_id))
+                Ignore.cmd(api, message, args, owner_id)
             elif cmd == '/unignore':
-                th = Thread(target=UnIgnore.cmd, args=(api, message, args))
+                UnIgnore.cmd(api, message, args)
             elif cmd == '/disable':
-                th = Thread(target=Disable.cmd, args=(api, message))
+                Disable.cmd(api, message)
             elif cmd in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
-                th = Thread(target=PrivacyOpen.cmd, args=(api, message, args, owner_id))
+                PrivacyOpen.cmd(api, message, args, owner_id)
             elif cmd in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:
-                th = Thread(target=PrivacyClose.cmd, args=(api, message, args, owner_id))
+                PrivacyClose.cmd(api, message, args, owner_id)
 
         if cmd in ['/au', '/audio']:
-            th = Thread(target=Audio.cmd, args=(api, message, args, uploader))
+            Audio.cmd(api, message, args, uploader)
         elif cmd in ['/d', '/dist']:
-            th = Thread(target=Dist.cmd, args=(api, message, args, uploader))
+            Dist.cmd(api, message, args, uploader)
         elif cmd in ['/n', '/negative']:
-            th = Thread(target=Negative.cmd, args=(api, message, args, uploader))
+            Negative.cmd(api, message, args, uploader)
         elif cmd in ['/t', '/text']:
-            th = Thread(target=Text.cmd, args=(api, message, args, uploader))
+            Text.cmd(api, message, args, uploader)
         elif cmd in ['/tc', '/tester_check']:
-            th = Thread(target=TestersCheck.cmd, args=(api, message, args))
+            TestersCheck.cmd(api, message, args)
         elif cmd in ['/stickers', '/st']:
-            th = Thread(target=Stickers.cmd, args=(api, message, args))
+            Stickers.cmd(vk_session, message, args)
         elif cmd in ['/ma', '/music_audio']:
-            th = Thread(target=Music.cmd, args=(api, message, owner_id, uploader))
+            Music.cmd(api, message, owner_id, uploader)
         elif cmd in ['/userid', '/uid']:
-            th = Thread(target=UserId.cmd, args=(api, message, args))
+            UserId.cmd(api, message, args)
         elif cmd in ['/help', '/911', '/112']:
-            th = Thread(target=Help.cmd, args=(api, message, owner_id))
+            Help.cmd(api, message, owner_id)
 
-        if th is not None:
-            th.start()
-            th = None
-except Exception as e:
-    print(e)
+    except skipHandle:
+        pass
+    except Exception as e:
+        print(e)
+
+print("Успешный запуск бота.")
+for event in longpoll.listen():
+    if event.type == VkEventType.MESSAGE_NEW:
+        multiprocess_worker = Thread(target=worker, args=(event, ))
+        multiprocess_worker.start()
+        
+    
