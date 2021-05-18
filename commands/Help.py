@@ -25,6 +25,10 @@ commands = {
             "description": "проверить пользователя на тестера",
         },
         {
+            "commands_alias": ["/st", "/stickers"],
+            "description": "узнать количество стикеров пользователя и цену",
+        },
+        {
             "commands_alias": ["/userid", "/uid"],
             "description": "получить ID пользователя",
         },

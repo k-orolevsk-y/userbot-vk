@@ -13,6 +13,7 @@ from .Negative import *
 from .PrivacyClose import *
 from .PrivacyOpen import *
 from .Repeat import *
+from .Stickers import *
 from .TestersCheck import *
 from .Text import *
 from .UnBan import *

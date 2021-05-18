@@ -133,6 +133,9 @@ try:
         if disable and message['from_id'] != owner_id:
             continue
 
+        if message['text'] is None or message['text'] == "":
+            continue
+
         args = message['text'].split()
         cmd = args[0].lower()
 
@@ -173,7 +176,9 @@ try:
         elif cmd in ['/t', '/text']:
             th = Thread(target=Text.cmd, args=(api, message, args, uploader))
         elif cmd in ['/tc', '/tester_check']:
-            th = Thread(target=TestersCheck.cmd, args=(api, message, args, owner_id))
+            th = Thread(target=TestersCheck.cmd, args=(api, message, args))
+        elif cmd in ['/stickers', '/st']:
+            th = Thread(target=Stickers.cmd, args=(api, message, args))
         elif cmd in ['/ma', '/music_audio']:
             th = Thread(target=Music.cmd, args=(api, message, owner_id, uploader))
         elif cmd in ['/userid', '/uid']:
