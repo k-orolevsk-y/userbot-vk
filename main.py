@@ -166,7 +166,7 @@ def worker(event):
         if cmd in ['/au', '/audio']:
             Audio.cmd(api, message, args, uploader)
         elif cmd in ['/d', '/dist']:
-            Dist.cmd(api, message, args, uploader)
+            Dist.cmd(vk_session, message, args, uploader)
         elif cmd in ['/n', '/negative']:
             Negative.cmd(api, message, args, uploader)
         elif cmd in ['/t', '/text']:

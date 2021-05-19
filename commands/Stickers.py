@@ -6,7 +6,7 @@ import ErrorMessages
 
 def cmd(vk, message, args):
     peer_id = message['peer_id']
-    _, target = functions.get_user_id_for_message(vk, message, args, ErrorMessages.getMessage('/stickers'))
+    _, target = functions.get_user_id_for_message(vk, message, args, ErrorMessages.getMessage('user','/stickers [пользователь]'))
 
     stickers_info = json.loads(requests.get(f"https://ssapi.ru/vk-stickers-api/?method=getStickers&user_id={target['id']}").text)
     

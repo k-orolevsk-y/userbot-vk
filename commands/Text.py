@@ -38,14 +38,15 @@ def cmd(api, message, args, uploader: VkUpload):
         f.write(r.content)
 
     text = " ".join(args[1:])
-    os.system(f"convert {filename} \
-          -bordercolor black -border 3  -bordercolor white -border 2 \
-          \( -background black -fill white -pointsize 24 \
-             label:\"{text}\"   -trim +repage \
-             -bordercolor black -border 20 \
-          \) -gravity South -append \
-          -bordercolor black -border 10   -gravity South -chop 0x10 \
-         {filename}")
+    os.system(f"convert {filename}" + \
+            " -bordercolor black -border 3  -bordercolor white -border 2" + \
+            " -background black -fill white -pointsize 24" + \
+            f" label:\"{text}\" -trim +repage" + \
+            " -bordercolor black -border 20" + \
+            " -gravity South -append" + \
+            " -bordercolor black -border 10" + \
+            f" -gravity South -chop 0x10 {filename}"
+        )
 
     uploaded = uploader.photo_messages(filename, peer_id=message['peer_id'])[0]
     attach = f"photo{uploaded['owner_id']}_{uploaded['id']}"
