@@ -15,7 +15,7 @@ def cmd(vk, message, args, uploader: VkUpload):
         functions.msg_send(
             vk,
             peer_id,
-            ErrorMessages.getMessage('custom', custom_error=('error', 'Необходимо ответить на сообщение с фотографией / стикером, либо прикрепить фотографию.')),
+            ErrorMessages.getMessage('custom', custom_error=('error', ' Необходимо ответить на сообщение с фотографией / стикером, либо прикрепить фотографию.')),
             message['id'],
         )
         raise skipHandle()
@@ -50,7 +50,7 @@ def cmd(vk, message, args, uploader: VkUpload):
             functions.msg_send(
                 vk,
                 peer_id,
-                ErrorMessages.getMessage('correct_use', '/d [степень от 1 до 10]'),
+                ErrorMessages.getMessage('correct_use', ' /d [степень от 1 до 10]'),
                 message['id']
             )
             raise skipHandle()

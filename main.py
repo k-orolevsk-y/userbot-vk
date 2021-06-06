@@ -62,6 +62,7 @@ def getChatName(chat_id):
 
     return chat_names_cache.get(chat_id)
 
+
 def worker(event):
     try:
         message = api.messages.getById(message_ids=event.message_id)['items'][0]
@@ -80,7 +81,8 @@ def worker(event):
                         'photo': '• фотография',
                         'video': '• видео',
                         'doc': '• документ',
-                        'graffiti': '• граффити'
+                        'graffiti': '• граффити',
+                        'link': '• ссылка'
                     }  # TODO: доработать (добавить ссылки на содержимое)
 
                     for replace in replacer:
@@ -178,7 +180,7 @@ def worker(event):
         elif cmd in ['/ma', '/music_audio']:
             Music.cmd(api, message, owner_id, uploader)
         elif cmd in ['/userid', '/uid']:
-            UserId.cmd(api, message, args)
+            UserId.cmd(api, message, owner_id, args)
         elif cmd in ['/help', '/911', '/112']:
             Help.cmd(api, message, owner_id)
 
@@ -187,10 +189,9 @@ def worker(event):
     except Exception as e:
         print(e)
 
+
 print("Успешный запуск бота.")
 for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW:
-        multiprocess_worker = Thread(target=worker, args=(event, ))
+        multiprocess_worker = Thread(target=worker, args=(event,))
         multiprocess_worker.start()
-        
-    
