@@ -67,6 +67,22 @@ commands = {
             "description": "спам сообщениями",
         },
         {
+            "commands_alias": ["/sa", "/save_audio"],
+            "description": "сохранить голосовое сообщение",
+        },
+        {
+            "commands_alias": ["/ag", "/aget"],
+            "description": "отправить сохранённое голосвое сообщение",
+        },
+        {
+            "commands_alias": ["/ad", "/adelete"],
+            "description": "удалить сохранённое голосвое сообщение",
+        },
+        {
+            "commands_alias": ["/alist"],
+            "description": "список сохранённых голосовых сообщений",
+        },
+        {
             "commands_alias": ["/unban"],
             "description": "разблокировать пользователя",
         },

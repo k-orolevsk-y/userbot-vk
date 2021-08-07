@@ -1,7 +1,7 @@
 import re
-import ujson
 import json
-import urllib.parse
+import time
+import ujson
 from CustomExceptions import skipHandle
 
 
@@ -36,19 +36,15 @@ def getData(id_name):
 
 
 def getUserId(scheme):
-    try:
-        parse = urllib.parse.urlparse(scheme).path
-        if scheme is not parse:
-            parse = str(parse)
-            return parse if parse[1] != "/" else parse[1:]
+    url = re.findall(r'vk\.com/([a-zA-Z0-9_\.]+)', scheme)[0]
+    if url is not None:
+        return url
 
-        reg = re.findall(r'\[id(\d*)\|.*]', scheme)[0]
-        if reg is not None:
-            return reg
+    reg = re.findall(r'\[id(\d*)\|.*]', scheme)[0]
+    if reg is not None:
+        return reg
 
-        return scheme
-    except:
-        return scheme
+    return scheme
 
 
 def get_user_id_for_message(vk, message, args, except_message):
@@ -110,3 +106,19 @@ def msg_send(vk, peer_id, message=None, reply_to=None, disable_mentions=0, attac
                       'content_source': content_source,
                       'disable_mentions': disable_mentions,
                       'random_id': 0})
+
+
+def msg_edit(vk, peer_id, message_id, message=None, attachment=None, sleeping=3, for_all=None):
+    vk.method('messages.edit',
+              {'peer_id': peer_id,
+               'message_id': message_id,
+               'message': message,
+               'attachment': attachment
+               })
+    if sleeping is not None:
+        time.sleep(sleeping)
+        vk.method('messages.delete', {
+            'message_ids': [message_id],
+            'delete_for_all': for_all
+        })
+    return True

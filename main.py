@@ -160,6 +160,14 @@ def worker(event):
                 UnIgnore.cmd(api, message, args)
             elif cmd == '/disable':
                 Disable.cmd(api, message)
+            elif cmd in ['/sa', '/save_audio']:
+                SaveAudioMessage.cmd(vk_session, message, args, uploader)
+            elif cmd in ['/ag', '/aget']:
+                GetSavedAudioMessage.cmd(vk_session, message, args)
+            elif cmd in ['/ad', '/adelete']:
+                DeleteSavedAudioMessage.cmd(vk_session, message, args)
+            elif cmd in ['/alist']:
+                ListSavedAudioMessage.cmd(vk_session, message, args)
             elif cmd in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
                 PrivacyOpen.cmd(api, message, args, owner_id)
             elif cmd in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:

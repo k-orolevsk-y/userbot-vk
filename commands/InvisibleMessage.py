@@ -18,16 +18,6 @@ def cmd(api, message, args, owner_id):
         )
         return
 
-    api.messages.edit(
-        peer_id=message['peer_id'],
-        message_id=message['id'],
-        message="&#13;"
-    )
-    api.messages.delete(
-        message_ids=message['id'],
-        delete_for_all=for_all
-    )
-
     expire_ttl = 86400
     try:
         last_n = args[1][-1]
@@ -46,6 +36,29 @@ def cmd(api, message, args, owner_id):
     except:
         expire_ttl = 86400
         need_more_split = False
+
+    if not(expire_ttl in [15, 60, 300, 900, 3600, 18000, 86400]):
+        api.messages.edit(
+            peer_id=message['peer_id'],
+            message_id=message['id'],
+            message=f"{config.prefixes['error']} Неверное время исчезающего сообщения, возможные варианты: 15 сек, 1 минута, 5 минут, 15 минут, 1 час, 5 часов, 1 день."
+        )
+        time.sleep(5)
+        api.messages.delete(
+            message_ids=message['id'],
+            delete_for_all=for_all
+        )
+        return
+
+    api.messages.edit(
+        peer_id=message['peer_id'],
+        message_id=message['id'],
+        message="&#13;"
+    )
+    api.messages.delete(
+        message_ids=message['id'],
+        delete_for_all=for_all
+    )
 
     split_text = message['text'].split(' ', 1)
     if len(split_text) > 1:
