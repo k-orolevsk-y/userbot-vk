@@ -36,13 +36,13 @@ def getData(id_name):
 
 
 def getUserId(scheme):
-    url = re.findall(r'vk\.com/([a-zA-Z0-9_\.]+)', scheme)[0]
-    if url is not None:
-        return url
+    url = re.findall(r'vk\.com/([a-zA-Z0-9_\.]+)', scheme)
+    if len(url) > 0:
+        return url[0]
 
-    reg = re.findall(r'\[id(\d*)\|.*]', scheme)[0]
-    if reg is not None:
-        return reg
+    reg = re.findall(r'\[id(\d*)\|.*]', scheme)
+    if len(reg) > 0:
+        return reg[0]
 
     return scheme
 

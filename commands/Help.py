@@ -72,11 +72,11 @@ commands = {
         },
         {
             "commands_alias": ["/ag", "/aget"],
-            "description": "отправить сохранённое голосвое сообщение",
+            "description": "отправить сохранённое голосовое сообщение",
         },
         {
             "commands_alias": ["/ad", "/adelete"],
-            "description": "удалить сохранённое голосвое сообщение",
+            "description": "удалить сохранённое голосовое сообщение",
         },
         {
             "commands_alias": ["/alist"],
