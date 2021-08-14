@@ -1,14 +1,14 @@
-import vk_api
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api import VkUpload
-from threading import Thread
 import os
 import time
-import functions
-from termcolor import colored
-from commands import *
-from CustomExceptions import *
 import config
+import vk_api
+import functions
+from commands import *
+from vk_api import VkUpload
+from threading import Thread
+from termcolor import colored
+from CustomExceptions import *
+from vk_api.longpoll import VkLongPoll, VkEventType
 
 try:
     import config_local as config
@@ -135,67 +135,81 @@ def worker(event):
             raise skipHandle()
 
         args = message['text'].split()
-        cmd = args[0].lower()
+        command = str(args[0]).lower()
+
+        assoc = functions.getData('assoc')
+        if assoc is None:
+            assoc = {}
+
+        for key in assoc.keys():
+            if command == key:
+                command = command.replace(key, assoc[key])
 
         if message['from_id'] == owner_id:
-            if cmd == '/copy':
+            if command == '/copy':
                 Copy.cmd(api, message, uploader)
-            elif cmd == '/del':
+            elif command == '/del':
                 Delete.cmd(api, message, args, owner_id)
-            elif cmd in ['/i', '/и']:
+            elif command in ['/i', '/и']:
                 InvisibleMessage.cmd(api, message, args, owner_id)
-            elif cmd == '/repeat':
+            elif command == '/repeat':
                 Repeat.cmd(api, message, args)
-            elif cmd == '/ban':
+            elif command == '/ban':
                 Ban.cmd(api, message, args, owner_id)
-            elif cmd == '/ban_chat':
+            elif command == '/ban_chat':
                 BanChat.cmd(api, message, args)
-            elif cmd == '/unban':
+            elif command == '/unban':
                 UnBan.cmd(api, message, args)
-            elif cmd == '/unban_chat':
+            elif command == '/unban_chat':
                 UnBanChat.cmd(api, message)
-            elif cmd == '/ignore':
+            elif command == '/ignore':
                 Ignore.cmd(api, message, args, owner_id)
-            elif cmd == '/unignore':
+            elif command == '/unignore':
                 UnIgnore.cmd(api, message, args)
-            elif cmd == '/disable':
+            elif command == '/disable':
                 Disable.cmd(api, message)
-            elif cmd in ['/sa', '/save_audio']:
+            elif command in ['/sa', '/save_audio']:
                 SaveAudioMessage.cmd(vk_session, message, args, uploader)
-            elif cmd in ['/ag', '/aget']:
+            elif command in ['/ag', '/aget']:
                 GetSavedAudioMessage.cmd(vk_session, message, args)
-            elif cmd in ['/ad', '/adelete']:
+            elif command in ['/ad', '/adelete']:
                 DeleteSavedAudioMessage.cmd(vk_session, message, args)
-            elif cmd in ['/alist']:
-                ListSavedAudioMessage.cmd(vk_session, message, args)
-            elif cmd in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
+            elif command in ['/alist']:
+                ListSavedAudioMessage.cmd(vk_session, message)
+            elif command in ['/assoc']:
+                Assoc.cmd(vk_session, message)
+            elif command in ['/assoc_set']:
+                AssocSet.cmd(vk_session, message, args)
+            elif command in ['/assoc_del']:
+                AssocDel.cmd(vk_session, message, args)
+            elif command in ['+музыка', '+audios', '+сохры', '+saves', '+м', '+a', '+с', '+s']:
                 PrivacyOpen.cmd(api, message, args, owner_id)
-            elif cmd in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:
+            elif command in ['-музыка', '-audios', '-сохры', '-saves', '-м', '-a', '-с', '-s']:
                 PrivacyClose.cmd(api, message, args, owner_id)
 
-        if cmd in ['/au', '/audio']:
+        if command in ['/au', '/audio']:
             Audio.cmd(api, message, args, uploader)
-        elif cmd in ['/d', '/dist']:
+        elif command in ['/d', '/dist']:
             Dist.cmd(vk_session, message, args, uploader)
-        elif cmd in ['/n', '/negative']:
+        elif command in ['/n', '/negative']:
             Negative.cmd(api, message, args, uploader)
-        elif cmd in ['/t', '/text']:
+        elif command in ['/t', '/text']:
             Text.cmd(api, message, args, uploader)
-        elif cmd in ['/tc', '/tester_check']:
+        elif command in ['/tc', '/tester_check']:
             TestersCheck.cmd(api, message, args)
-        elif cmd in ['/stickers', '/st']:
+        elif command in ['/stickers', '/st']:
             Stickers.cmd(vk_session, message, args)
-        elif cmd in ['/ma', '/music_audio']:
+        elif command in ['/ma', '/music_audio']:
             Music.cmd(api, message, owner_id, uploader)
-        elif cmd in ['/userid', '/uid']:
+        elif command in ['/userid', '/uid']:
             UserId.cmd(api, message, owner_id, args)
-        elif cmd in ['/help', '/911', '/112']:
+        elif command in ['/help', '/911', '/112']:
             Help.cmd(api, message, owner_id)
 
     except skipHandle:
         pass
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
 
 
 print("Успешный запуск бота.")

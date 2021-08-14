@@ -43,6 +43,18 @@ commands = {
             "description": "заблокировать чат (бот не будет в нем работать)",
         },
         {
+            "commands_alias": ["/assoc"],
+            "description": "список ассоциаций",
+        },
+        {
+            "commands_alias": ["/assoc_set"],
+            "description": "добавить ассоциацию",
+        },
+        {
+            "commands_alias": ["/assoc_del"],
+            "description": "удалить ассоциацию",
+        },
+        {
             "commands_alias": ["/ignore"],
             "description": "добавить пользователя в игнор (его сообщения будут удалятся для вас)",
         },
