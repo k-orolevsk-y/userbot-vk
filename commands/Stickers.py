@@ -27,7 +27,7 @@ def cmd(vk, message, args):
         price_votes = info['price_vote']
         price_rubles = info['price']
         out_message += f" из них {functions.pluralForm(paid_stickers, ['стикерпак платный', 'стикерпака платные', 'стикерпаков платные'])} и {functions.pluralForm(info['styles'], ['стиль','стиля','стилей'])}."
-        out_message += f"\n\n⚙️ Цена стикеров (в голосах / в рублях): {price_votes} / {price_rubles}₽"
+        out_message += f"\n\n🤕 Бесплатные стикеры: {stickers_info['random']['free']}\n🤑 Платные стикеры: {stickers_info['random']['paid']}\n\n😻 Цена стикеров: {functions.pluralForm(price_votes, [ 'голос', 'голоса', 'голосов' ])} / {price_rubles}₽"
 
     functions.msg_send(
             vk, 
