@@ -1,3 +1,6 @@
+from .Assoc import *
+from .AssocSet import *
+from .AssocDel import *
 from .Audio import *
 from .Ban import *
 from .BanChat import *
