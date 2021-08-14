@@ -208,8 +208,8 @@ def worker(event):
 
     except skipHandle:
         pass
-    except Exception as e:
-        print(e)
+    # except Exception as e:
+    #     print(e)
 
 
 print("Успешный запуск бота.")
