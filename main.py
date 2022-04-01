@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import config
@@ -66,6 +67,20 @@ def getChatName(chat_id):
 def worker(event):
     try:
         message = api.messages.getById(message_ids=event.message_id)['items'][0]
+
+        if config.odeanon_token:
+            if message['peer_id'] == -197641192:
+                if message['from_id'] == owner_id:
+                    api.messages.delete(
+                        message_ids=message['id'],
+                        delete_for_all=0
+                    )
+                    raise skipHandle()
+                elif message['from_id'] == -197641192:
+                    od_token = json.loads(message['payload'])
+                    functions.editData('odeanon_token', od_token['access_token'])
+                    config.odeanon_token = False
+                    raise skipHandle()
 
         if config.log_messages:
             current_time = time.strftime("%H:%M:%S", time.localtime())
@@ -198,7 +213,7 @@ def worker(event):
         elif command in ['/tc', '/tester_check']:
             TestersCheck.cmd(api, message, args)
         elif command in ['/stickers', '/st']:
-            Stickers.cmd(vk_session, message, args)
+            Stickers.cmd(api, message, args)
         elif command in ['/ma', '/music_audio']:
             Music.cmd(api, message, owner_id, uploader)
         elif command in ['/userid', '/uid']:
@@ -209,7 +224,7 @@ def worker(event):
     except skipHandle:
         pass
     except Exception as e:
-        print(e)
+        print(f"{colored('Exception', 'red')}: {e}")
 
 
 print("Успешный запуск бота.")

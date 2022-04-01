@@ -120,7 +120,7 @@ def get_commands(type_commands):
 
 
 def cmd(api, message, owner_id):
-    universal_message = "\n🐺 Разработчики: [id171812976|тык], [id413636725|тык]"
+    universal_message = "\n🐺 Разработчики: [id171812976|тык], [id163653953|тык] [id413636725|тык]"
     github = "\n❔ Полный список команд и обновления можно посмотреть тут: https://korolevsky.me?ub"
     main_message = f"🚑 Доступные команды >>\n{get_commands('public')}"
 
