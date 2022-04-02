@@ -33,17 +33,20 @@ def get_token(api, message):
 
 
 def get_random(list):
-    count = len(list)
+    titles = []
+
+    for i in list:
+        titles.append(i['title'])
+
     resp = ''
 
-    if count >= 3:
-        for i in range(3):
-            r = random.randint(0, count - 1)
-            resp += f"{list.pop(r)['title']}, "
+    if len(titles) >= 3:
+        resp += f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
+                f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
+                f"{titles.pop(random.randint(0, len(titles) - 1))}"
 
     else:
-        for i in list:
-            resp += f"{i['title']}"
+        resp.join(titles)
 
     return resp
 
