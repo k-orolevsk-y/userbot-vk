@@ -1,4 +1,3 @@
-import json
 import random
 import time
 
@@ -83,37 +82,70 @@ def cmd(api, message, args):
             user_ids=user_id
         )[0]
 
-        stickers_info = json.loads(
-            requests.get(
-                f"https://api.korolevsky.me/method/stickers.get?access_token={tkn}&user_id={target['id']}").text
-        )
+        stickers_info = requests.get(
+            f"https://api.korolevsky.me/method/stickers.get?access_token={tkn}&user_id={target['id']}"
+        ).json()
 
-        if 'error' in stickers_info:
-            api.messages.edit(
-                peer_id=message['peer_id'],
-                message_id=message['id'],
-                message=f"{config.prefixes['error']} Ошибка при обращении к API: {stickers_info['error_msg']}"
-            )
+        out_message = ''
 
-        stickers_info = stickers_info['response']
-        out_message = f"{config.prefixes['success']} [id{target['id']}|{target['first_name']} {target['last_name']}] имеет {functions.pluralForm(stickers_info['info']['count']['all'], ['стикерпак', 'стикерпака', 'стикерпаков'])}"
-        paid_stickers = stickers_info['info']['count']['paid']
+        if not stickers_info['ok']:
+            if stickers_info['error']['error_code'] == 429:
+                out_message += f"{config.prefixes['error']} " \
+                               f"Дневной лимит на стикеры достигнут либо слишком частое использование. \n" \
+                               f"Для увеличения лимитов, оформите подписку VK Donut на @odeanon\n"
 
-        if paid_stickers == 0:
-            out_message += ".\n🥺 Платных стикерпаков у пользователя нет."
+                api.messages.edit(
+                    peer_id=message['peer_id'],
+                    message_id=message['id'],
+                    message=out_message,
+                    attachment="donut_link-197641192"
+                )
 
-        else:
-            info = stickers_info['info']
-            items = stickers_info['items']
-            price_votes = info['price_vote']
-            price_rubles = info['price']
-            out_message += f"\n\n🤕 Бесплатных стикеров: {info['count']['free']}\n\t{get_random(items['free'])}"
-            out_message += f"\n\n🤑 Платных стикеров: {info['count']['paid']}\n\t{get_random(items['paid'])}"
-            out_message += f"\n\n🎭 Стилей: {info['count']['styles']}\n\t{get_styles(items)}"
-            out_message += f"\n\n😻 Цена стикеров: {functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])} / {price_rubles}₽"
+            else:
+                out_message += f"{config.prefixes['error']} Произошла непредвиденная ошибка\n" \
+                               f"{stickers_info['error'].get('error_msg')}\n" \
+                               f"{stickers_info['error'].get('error_description')}\n\n" \
+                               f"При возникновении ошибки пишите [id163653953|тык]"
+                api.messages.edit(
+                    peer_id=message['peer_id'],
+                    message_id=message['id'],
+                    message=out_message
+                )
 
-        api.messages.edit(
-            peer_id=message['peer_id'],
-            message_id=message['id'],
-            message=out_message
-        )
+        elif stickers_info['ok']:
+            stickers_info = stickers_info['response']
+
+            if f"{stickers_info}" == "[]":
+                out_message += f"{config.prefixes['success_no']} " \
+                               f"[id{target['id']}|{target['first_name']} {target['last_name']}] " \
+                               f"был скрыт от просмотра в данном боте."
+                api.messages.edit(
+                    peer_id=message['peer_id'],
+                    message_id=message['id'],
+                    message=out_message
+                )
+
+            else:
+                out_message += f"{config.prefixes['success']} " \
+                               f"[id{target['id']}|{target['first_name']} {target['last_name']}] " \
+                               f"имеет {functions.pluralForm(stickers_info['info']['count']['all'], ['стикерпак', 'стикерпака', 'стикерпаков'])}"
+                paid_stickers = stickers_info['info']['count']['paid']
+
+                if paid_stickers == 0:
+                    out_message += ".\n🥺 Платных стикерпаков у пользователя нет."
+
+                else:
+                    info = stickers_info['info']
+                    items = stickers_info['items']
+                    price_votes = info['price_vote']
+                    price_rubles = info['price']
+                    out_message += f"\n\n🤕 Бесплатных стикеров: {info['count']['free']}\n{get_random(items['free'])}"
+                    out_message += f"\n\n🤑 Платных стикеров: {info['count']['paid']}\n{get_random(items['paid'])}"
+                    out_message += f"\n\n🎭 Стилей: {info['count']['styles']}\n{get_styles(items)}"
+                    out_message += f"\n\n😻 Цена стикеров: {functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])} / {price_rubles}₽"
+
+                api.messages.edit(
+                    peer_id=message['peer_id'],
+                    message_id=message['id'],
+                    message=out_message
+                )
