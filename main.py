@@ -224,11 +224,15 @@ def worker(event):
     except skipHandle:
         pass
     except Exception as e:
-        print(f"{colored('Exception', 'red')}: {e}")
+        print(f"{colored('Exception during processing', 'red')}: {e}")
 
 
 print("Успешный запуск бота.")
-for event in longpoll.listen():
-    if event.type == VkEventType.MESSAGE_NEW:
-        multiprocess_worker = Thread(target=worker, args=(event,))
-        multiprocess_worker.start()
+while True:
+    try:
+        for event in longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW:
+                multiprocess_worker = Thread(target=worker, args=(event,))
+                multiprocess_worker.start()
+    except Exception as _e:
+        print(f"{colored('Longpoll exception', 'red')}: {_e}")
