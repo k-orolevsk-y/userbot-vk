@@ -12,11 +12,14 @@ def get_token(api, message):
         return resp
     else:
         config.odeanon_token = True
-        api.messages.edit(
-            peer_id=message['peer_id'],
-            message_id=message['id'],
-            message=f"{config.prefixes['process']} Идёт получение токена"
-        )
+        try:
+            api.messages.edit(
+                peer_id=message['peer_id'],
+                message_id=message['id'],
+                message=f"{config.prefixes['process']} Идёт получение токена"
+            )
+        except:
+            pass
         api.messages.send(
             peer_id='-197641192',
             random_id=0,
@@ -61,7 +64,7 @@ def get_styles(items):
     return get_random(styles)
 
 
-def cmd(api, message, args):
+def cmd(api, message, args, owner_id):
     reply = message.get('reply_message')
     tkn = get_token(api, message)
     progress = True
@@ -71,11 +74,18 @@ def cmd(api, message, args):
 
     else:
         if len(args) < 2:
-            api.messages.edit(
-                peer_id=message['peer_id'],
-                message_id=message['id'],
-                message=f"{config.prefixes['error']} Правильное использование: /stickers [пользователь]"
-            )
+            if message['from_id'] == owner_id:
+                api.messages.edit(
+                    peer_id=message['peer_id'],
+                    message_id=message['id'],
+                    message=f"{config.prefixes['error']} Правильное использование: /stickers [пользователь]"
+                )
+            else:
+                api.messages.send(
+                    peer_id=message['peer_id'],
+                    random_id=0,
+                    message=f"{config.prefixes['error']} Правильное использование: /stickers [пользователь]"
+                )
             progress = False
         else:
             user_id = functions.getUserId(args[1])
@@ -97,23 +107,38 @@ def cmd(api, message, args):
                                f"Дневной лимит на стикеры достигнут либо слишком частое использование. \n" \
                                f"Для увеличения лимитов, оформите подписку VK Donut на @odeanon\n"
 
-                api.messages.edit(
-                    peer_id=message['peer_id'],
-                    message_id=message['id'],
-                    message=out_message,
-                    attachment="donut_link-197641192"
-                )
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message,
+                        attachment="donut_link-197641192"
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message,
+                        attachment="donut_link-197641192"
+                    )
 
             else:
                 out_message += f"{config.prefixes['error']} Произошла непредвиденная ошибка\n" \
                                f"{stickers_info['error'].get('error_msg')}\n" \
                                f"{stickers_info['error'].get('error_description')}\n\n" \
                                f"При возникновении ошибки пишите [id163653953|тык]"
-                api.messages.edit(
-                    peer_id=message['peer_id'],
-                    message_id=message['id'],
-                    message=out_message
-                )
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message
+                    )
 
         elif stickers_info['ok']:
             stickers_info = stickers_info['response']
@@ -122,11 +147,18 @@ def cmd(api, message, args):
                 out_message += f"{config.prefixes['success_no']} " \
                                f"[id{target['id']}|{target['first_name']} {target['last_name']}] " \
                                f"был скрыт от просмотра в данном боте."
-                api.messages.edit(
-                    peer_id=message['peer_id'],
-                    message_id=message['id'],
-                    message=out_message
-                )
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message
+                    )
 
             else:
                 out_message += f"{config.prefixes['success']} " \
@@ -147,8 +179,15 @@ def cmd(api, message, args):
                     out_message += f"\n\n🎭 Стилей: {info['count']['styles']}\n{get_styles(items)}"
                     out_message += f"\n\n😻 Цена стикеров: {functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])} / {price_rubles}₽"
 
-                api.messages.edit(
-                    peer_id=message['peer_id'],
-                    message_id=message['id'],
-                    message=out_message
-                )
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message
+                    )
