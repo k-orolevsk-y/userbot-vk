@@ -54,14 +54,15 @@ def get_random(list):
     return resp
 
 
-def get_styles(items):
-    styles = []
+def get_from_type(items, _type):
+    out = []
+
     for i in items:
         for k in items[i]:
-            if k.get('style') != 0:
-                styles.append(k)
+            if k.get(_type) != 0:
+                out.append(k)
 
-    return get_random(styles)
+    return get_random(out)
 
 
 def cmd(api, message, args, owner_id):
@@ -131,17 +132,23 @@ def cmd(api, message, args, owner_id):
                     api.messages.edit(
                         peer_id=message['peer_id'],
                         message_id=message['id'],
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
                 else:
                     api.messages.send(
                         peer_id=message['peer_id'],
                         random_id=0,
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
 
         elif stickers_info['ok']:
             stickers_info = stickers_info['response']
+            info = stickers_info['info']
+            items = stickers_info['items']
+            price_votes = info['price_vote']
+            price_rubles = info['price']
 
             if f"{stickers_info}" == "[]":
                 out_message += f"{config.prefixes['success_no']} " \
@@ -151,43 +158,52 @@ def cmd(api, message, args, owner_id):
                     api.messages.edit(
                         peer_id=message['peer_id'],
                         message_id=message['id'],
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
                 else:
                     api.messages.send(
                         peer_id=message['peer_id'],
                         random_id=0,
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
 
             else:
-                out_message += f"{config.prefixes['success']} " \
-                               f"[id{target['id']}|{target['first_name']} {target['last_name']}] " \
-                               f"имеет {functions.pluralForm(stickers_info['info']['count']['all'], ['стикерпак', 'стикерпака', 'стикерпаков'])}"
-                paid_stickers = stickers_info['info']['count']['paid']
+                out_message += f"[id{message['from_id']}|😻] [id{target['id']}|{target['first_name']} {target['last_name']}] " \
+                               f"имеет {functions.pluralForm(stickers_info['info']['count']['all'], ['стикерпак', 'стикерпака', 'стикерпаков'])} " \
+                               f"(из них {info['count']['paid']} платных, " \
+                               f"{info['count']['styles']} стилей и " \
+                               f"{info['count']['promo']} уникальных)\n"
 
-                if paid_stickers == 0:
-                    out_message += ".\n🥺 Платных стикерпаков у пользователя нет."
+                out_message += f"\n🐔 Из бесплатных: {get_random(items['free'])}"
+
+                if info['count']['paid'] == 0:
+                    out_message += ".\n🥺 Платных стикерпаков у пользователя нет"
 
                 else:
-                    info = stickers_info['info']
-                    items = stickers_info['items']
-                    price_votes = info['price_vote']
-                    price_rubles = info['price']
-                    out_message += f"\n\n🤕 Бесплатных стикеров: {info['count']['free']}\n{get_random(items['free'])}"
-                    out_message += f"\n\n🤑 Платных стикеров: {info['count']['paid']}\n{get_random(items['paid'])}"
-                    out_message += f"\n\n🎭 Стилей: {info['count']['styles']}\n{get_styles(items)}"
-                    out_message += f"\n\n😻 Цена стикеров: {functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])} / {price_rubles}₽"
+                    out_message += f"\n🤑 Из платных: {get_random(items['paid'])}"
+
+                if info['count']['styles'] > 0:
+                    out_message += f"\n🎭 Из стилей: {get_from_type(items, 'styles')}"
+
+                if info['count']['promo'] > 0:
+                    out_message += f"\n🐹 Из уникальных: {get_from_type(items, 'promo')}"
+
+                if price_votes > 0:
+                    out_message += f"\n\n⚙ Общая сумма купленных и подаренных стикеров: {price_rubles}₽ ({functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])})"
 
                 if message['from_id'] == owner_id:
                     api.messages.edit(
                         peer_id=message['peer_id'],
                         message_id=message['id'],
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
                 else:
                     api.messages.send(
                         peer_id=message['peer_id'],
                         random_id=0,
-                        message=out_message
+                        message=out_message,
+                        disable_mentions=True
                     )
