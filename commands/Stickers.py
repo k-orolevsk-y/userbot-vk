@@ -41,15 +41,13 @@ def get_random(list):
     for i in list:
         titles.append(i['title'])
 
-    resp = ''
-
     if len(titles) >= 3:
-        resp += f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
+        resp = f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
                 f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
                 f"{titles.pop(random.randint(0, len(titles) - 1))}"
 
     else:
-        resp.join(titles)
+        resp = ", ".join(titles)
 
     return resp
 
