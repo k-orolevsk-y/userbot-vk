@@ -1,4 +1,3 @@
-import json
 import random
 import time
 
@@ -123,9 +122,9 @@ def cmd(api, message, args, owner_id):
                     )
 
             else:
-                out_message += f"{config.prefixes['error']} Произошла непредвиденная ошибка\n" \
-                               f"{stickers_info['error'].get('error_msg')}\n" \
-                               f"{stickers_info['error'].get('error_description')}\n\n" \
+                out_message += f"{config.prefixes['error']} Произошла непредвиденная ошибка:\n" \
+                               f"Description: {stickers_info['error'].get('error_msg')}\n" \
+                               f"Error code: {stickers_info['error'].get('error_code')}\n\n" \
                                f"При возникновении ошибки пишите [id163653953|тык]"
                 if message['from_id'] == owner_id:
                     api.messages.edit(
