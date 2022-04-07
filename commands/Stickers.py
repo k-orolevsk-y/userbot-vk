@@ -143,10 +143,6 @@ def cmd(api, message, args, owner_id):
 
         elif stickers_info['ok']:
             stickers_info = stickers_info['response']
-            info = stickers_info['info']
-            items = stickers_info['items']
-            price_votes = info['price_vote']
-            price_rubles = info['price']
 
             if f"{stickers_info}" == "[]":
                 out_message += f"{config.prefixes['success_no']} " \
@@ -168,6 +164,11 @@ def cmd(api, message, args, owner_id):
                     )
 
             else:
+                info = stickers_info['info']
+                items = stickers_info['items']
+                price_votes = info['price_vote']
+                price_rubles = info['price']
+
                 out_message += f"[id{message['from_id']}|😻] [id{target['id']}|{target['first_name']} {target['last_name']}] " \
                                f"имеет {functions.pluralForm(stickers_info['info']['count']['all'], ['стикерпак', 'стикерпака', 'стикерпаков'])} " \
                                f"(из них {info['count']['paid']} платных, " \
