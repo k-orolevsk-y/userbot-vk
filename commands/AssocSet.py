@@ -52,7 +52,7 @@ def cmd(vk, message, args):
 
     functions.msg_edit(
         vk, peer_id, message['id'],
-        f"{config.prefixes['success']} Создана новая ассоциаця для команды {key}: `{assoc}`!",
+        f"{config.prefixes['success']} Создана новая ассоциация для команды {key}: `{assoc}`!",
         for_all=for_all,
         sleeping=5
     )
