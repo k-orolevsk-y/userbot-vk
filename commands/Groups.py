@@ -111,8 +111,6 @@ def cmd(api, message, args, owner_id):
                 fields="members_count"
             )
 
-            print(vk_resp)
-
             vk_count = 0
             vk_groups = {}
 
@@ -126,7 +124,7 @@ def cmd(api, message, args, owner_id):
             for i in groups_items:
                 if len(groups) < 3000:
                     count += 1
-                    groups += f"{count}. [club{i['group_id']}|{i['name']}] (👥 {vk_groups[count]})\n"
+                    groups += f"{count}. @club{i['group_id']} ({i['name']}) (👥 {vk_groups[count]})\n"
 
             out_message += f"(показано {count}/{groups_info['count']})\n\n{groups}"
 
