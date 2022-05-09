@@ -214,6 +214,8 @@ def worker(event):
             TestersCheck.cmd(api, message, args)
         elif command in ['/stickers', '/st']:
             Stickers.cmd(api, message, args, owner_id)
+        elif command in ['/g', '/groups']:
+            Groups.cmd(api, message, args, owner_id)
         elif command in ['/ma', '/music_audio']:
             Music.cmd(api, message, owner_id, uploader)
         elif command in ['/userid', '/uid']:
