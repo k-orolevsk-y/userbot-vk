@@ -29,6 +29,10 @@ commands = {
             "description": "узнать количество стикеров пользователя и цену",
         },
         {
+            "commands_alias": ["/g", "/groups"],
+            "description": "возможные сообщества пользователя",
+        },
+        {
             "commands_alias": ["/userid", "/uid"],
             "description": "получить ID пользователя",
         },
