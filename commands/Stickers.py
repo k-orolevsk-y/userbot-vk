@@ -39,7 +39,8 @@ def get_random(list):
     titles = []
 
     for i in list:
-        titles.append(i['title'])
+        if (k := i.get('title')) is not None:
+            titles.append(k)
 
     if len(titles) >= 3:
         resp = f"{titles.pop(random.randint(0, len(titles) - 1))}, " \
@@ -190,7 +191,8 @@ def cmd(api, message, args, owner_id):
                     out_message += f"\n🐹 Из уникальных: {get_from_type(items, 'promo')}"
 
                 if price_votes > 0:
-                    out_message += f"\n\n⚙ Общая сумма купленных и подаренных стикеров: {price_rubles}₽ ({functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])})"
+                    out_message += f"\n\n⚙ Общая сумма купленных и подаренных стикеров: {price_rubles}₽ " \
+                                   f"({functions.pluralForm(price_votes, ['голос', 'голоса', 'голосов'])}) "
 
                 if message['from_id'] == owner_id:
                     api.messages.edit(

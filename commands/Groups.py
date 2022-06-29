@@ -96,47 +96,64 @@ def cmd(api, message, args, owner_id):
             out_message += f"[id{message['from_id']}|✅] | " \
                            f"Группы [id{target['id']}|{target['first_name']} {target['last_name']}] "
 
-            vk_count = 0
-            vk_groups = []
+            if groups_info['count'] != 0:
+                vk_count = 0
+                vk_groups = []
 
-            for i in groups_items:
-                if vk_count < 250:
+                for i in groups_items:
+                    if vk_count < 250:
+                        vk_count += 1
+                        vk_groups.append(str(i['group_id']))
+
+                vk_groups = ",".join(vk_groups)
+
+                vk_resp = api.groups.getById(
+                    group_ids=vk_groups,
+                    fields="members_count"
+                )
+
+                vk_count = 0
+                vk_groups = {}
+
+                for i in vk_resp:
                     vk_count += 1
-                    vk_groups.append(str(i['group_id']))
+                    vk_groups[vk_count] = i.get('members_count', 'Закрытая группа')
 
-            vk_groups = ",".join(vk_groups)
+                groups = ""
+                count = 0
 
-            vk_resp = api.groups.getById(
-                group_ids=vk_groups,
-                fields="members_count"
-            )
+                for i in groups_items:
+                    if len(groups) < 3000:
+                        count += 1
+                        groups += f"{count}. @club{i['group_id']} ({i['name']}) (👥 {vk_groups[count]})\n"
 
-            vk_count = 0
-            vk_groups = {}
+                out_message += f"(показано {count}/{groups_info['count']})\n\n{groups}"
 
-            for i in vk_resp:
-                vk_count += 1
-                vk_groups[vk_count] = i['members_count']
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message
+                    )
 
-            groups = ""
-            count = 0
-
-            for i in groups_items:
-                if len(groups) < 3000:
-                    count += 1
-                    groups += f"{count}. @club{i['group_id']} ({i['name']}) (👥 {vk_groups[count]})\n"
-
-            out_message += f"(показано {count}/{groups_info['count']})\n\n{groups}"
-
-            if message['from_id'] == owner_id:
-                api.messages.edit(
-                    peer_id=message['peer_id'],
-                    message_id=message['id'],
-                    message=out_message
-                )
             else:
-                api.messages.send(
-                    peer_id=message['peer_id'],
-                    random_id=0,
-                    message=out_message
-                )
+                out_message += "отсутствуют (показано 0/0)"
+
+                if message['from_id'] == owner_id:
+                    api.messages.edit(
+                        peer_id=message['peer_id'],
+                        message_id=message['id'],
+                        message=out_message
+                    )
+                else:
+                    api.messages.send(
+                        peer_id=message['peer_id'],
+                        random_id=0,
+                        message=out_message
+                    )

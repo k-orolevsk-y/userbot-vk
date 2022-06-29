@@ -30,7 +30,7 @@ def getData(id_name):
         file = open('data.json')
         data = ujson.loads(file.readline())
 
-        return data[str(id_name)]
+        return data[id_name]
     except:
         return None
 
